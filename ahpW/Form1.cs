@@ -15,8 +15,10 @@ namespace ahpW
         List<kryteriaClass> kryteriaList = new List<kryteriaClass>();
         List<atrybutyClass> atrybutyList = new List<atrybutyClass>();
         List<WagiClass> wagiList = new List<WagiClass>();
-        int[,] wagiKryteria = new int[5,5];
-       static int x = 0;
+        int[,] wagiKryteria = new int[5, 5];
+
+        float[] wKryteria = new float[10];
+        static int x = 0;
         public Form1()
         {
             InitializeComponent();
@@ -31,12 +33,14 @@ namespace ahpW
                 dodajKryterium f = new dodajKryterium(this);
                 DialogResult dr = f.ShowDialog();
             }
-            else {
+            else
+            {
                 button1.Visible = false;
             }
         }
 
-        public void addKryterium(kryteriaClass k) {
+        public void addKryterium(kryteriaClass k)
+        {
             kryteriaList.Add(k);
 
             comboBox1.Items.Add(k.nazwaKryterium);
@@ -49,7 +53,7 @@ namespace ahpW
             else
             {
                 treeView1.Nodes["KryteriaMain"].Nodes.Add(k.nazwaKryterium);
-            }                
+            }
         }
         public void addAtrybuty(atrybutyClass a)
         {
@@ -60,7 +64,8 @@ namespace ahpW
                 treeView1.Nodes.Add("AtrybutyMain", "Atrybuty");
                 treeView1.Nodes["AtrybutyMain"].Nodes.Add(a.nazwaAtrybutu);
             }
-            else {
+            else
+            {
                 treeView1.Nodes["AtrybutyMain"].Nodes.Add(a.nazwaAtrybutu);
             }
 
@@ -95,9 +100,10 @@ namespace ahpW
             }
         }
 
-        public void addDataRowToGrid() {
+        public void addDataRowToGrid()
+        {
 
-           
+
 
         }
         public void addDataColumnToGrid(kryteriaClass k)
@@ -106,12 +112,12 @@ namespace ahpW
             dataGridView1.Rows.Add();
 
 
-            for (int i = 0; i < dataGridView1.Rows.Count-1; i++)
+            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
             {
                 this.dataGridView1.Rows[i].HeaderCell.Value = kryteriaList[i].nazwaKryterium;
             }
             dataGridView1.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
-            
+
 
             try
             {
@@ -141,7 +147,7 @@ namespace ahpW
 
         public void addAtrubutyDoKryterium(atrybutyClass a)
         {
-            
+
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -170,7 +176,8 @@ namespace ahpW
                                 dataGridView1.Rows[j].Cells[i].ReadOnly = true;
                             }
                         }
-                        catch (Exception x) {
+                        catch (Exception x)
+                        {
                             dataGridView1.Rows[j].Cells[i].Value = null;
                             dataGridView1.Rows[i].Cells[j].Value = null;
                             MessageBox.Show(x.Message);
@@ -179,7 +186,7 @@ namespace ahpW
                 }
 
             }
-        
+
         }
 
 
@@ -206,7 +213,6 @@ namespace ahpW
         {
             ComboBox comboBox = (ComboBox)sender;
             string selected = (string)comboBox.SelectedItem;
-            MessageBox.Show(selected);
             dodajAtrybutyDoKryterium a = new dodajAtrybutyDoKryterium(this, atrybutyList, selected);
             DialogResult dr = a.ShowDialog();
         }
@@ -220,6 +226,75 @@ namespace ahpW
         {
             dodajAtrybuty a = new dodajAtrybuty(this);
             DialogResult dr = a.ShowDialog();
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+
+            try
+            {
+                object[,] wKryteria = new object[dataGridView1.Rows.Count, dataGridView1.Columns.Count];
+                double[] vKryteria = new double[kryteriaList.Count + 1];
+                double row_sum = 0;
+
+                for (int x = 0; x < wKryteria.GetLength(0); x++)
+                    for (int i = 0; i < wKryteria.GetLength(1); i++)
+                        wKryteria[x, i] = dataGridView1.Rows[x].Cells[i].Value;
+
+                for (int x = 0; x < wKryteria.GetLength(0); x++)
+                {
+                    if (x > 0)
+MNOŻENIE POPRAWIC//
+                    MessageBox.Show("" + row_sum);
+                    row_sum = Math.Pow(row_sum, 1.0 / kryteriaList.Count);
+                    vKryteria[x] = row_sum;
+                }
+                row_sum = 1;
+                for (int i = 0; i < wKryteria.GetLength(1); i++)
+                {
+                    row_sum = row_sum + Convert.ToDouble(wKryteria[x, i]);
+                }
+            
+
+                for (int i = 1; i <= kryteriaList.Count; i++) {
+                Label lbl = new Label();
+                this.Controls.Add(lbl);
+                lbl.Top = 80 + x * 20;
+                lbl.Size = new Size(100, 16);
+                lbl.ForeColor = Color.Black;
+                lbl.Text = vKryteria[i].ToString();
+                lbl.Left = 690;
+                x = x + 1;
+            }
+        } 
+
+            catch (Exception r)
+            {
+
+                MessageBox.Show(r.Message);
+            }
+          /*  string total = "";
+            for (int i = 0; i < wKryteria.GetLength(0); i++)
+            {
+                for (int j = 0; j < wKryteria.GetLength(1); j++)
+                {
+                    total += wKryteria[i, j];
+                }
+            }
+
+            Label lbl = new Label();
+            this.Controls.Add(lbl);
+            lbl.Top = 55 + x * 20;
+            lbl.Size = new Size(100, 16);
+            lbl.ForeColor = Color.Black;
+            lbl.Text = total;
+            lbl.Left = 690;
+            x = x + 1;*/
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
