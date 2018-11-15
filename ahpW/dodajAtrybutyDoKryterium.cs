@@ -15,6 +15,7 @@ namespace ahpW
         private Form1 x = null;
         List<atrybutyClass> atrybutyList = new List<atrybutyClass>();
         String nazwaKryterium;
+        static int y = 0;
         public dodajAtrybutyDoKryterium(Form1 f, List<atrybutyClass> atrybuty, String nazwa)
         {
             atrybutyClass a = new atrybutyClass();
@@ -117,6 +118,81 @@ namespace ahpW
         private void label2_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                object[,] wAtrybuty = new object[dataGridView1.Rows.Count, dataGridView1.Columns.Count];
+                double[] vAtrybuty = new double[atrybutyList.Count + 1];
+                double[] alfaAtrybuty= new double[atrybutyList.Count + 1];
+                double row_sum = 1;
+                double sWag = 0;
+                double wagaAlfa = 0;
+                for (int x = 0; x < wAtrybuty.GetLength(0); x++)
+                    for (int i = 0; i < wAtrybuty.GetLength(1); i++)
+                        wAtrybuty[x, i] = dataGridView1.Rows[x].Cells[i].Value;
+
+                for (int i = 0; i < wAtrybuty.GetLength(0); i++)
+                {
+                    if (i > 0)
+                    {
+                        row_sum = Math.Pow(row_sum, 1.0 / atrybutyList.Count);
+                        vAtrybuty[i] = row_sum;
+                    }
+                    row_sum = 1;
+                    for (int j = 0; j < wAtrybuty.GetLength(1); j++)
+                    {
+                        row_sum = row_sum * Convert.ToDouble(wAtrybuty[i, j]);
+                    }
+                }
+
+                for (int i = 1; i <= atrybutyList.Count + 1; i++)
+                {
+
+                    if (i <= atrybutyList.Count)
+                    {
+                    }
+                    else
+                    {
+
+                        for (int x = 1; x <= atrybutyList.Count; x++)
+                        {
+                            sWag += vAtrybuty[x];
+                        }
+                        Label lbl = new Label();
+                        this.Controls.Add(lbl);
+                        lbl.Top = 350 + y * 20;
+                        lbl.Size = new Size(100, 16);
+                        lbl.ForeColor = Color.Black;
+                        lbl.Text = "Suma: " + sWag.ToString("0.00");
+                        lbl.Left = 10;
+                        y = y + 1;
+                    }
+                }
+                double sumaAlfaKryteria = 0;
+                for (int i = 1; i <= atrybutyList.Count; i++)
+                {
+                    wagaAlfa = (vAtrybuty[i] / sWag) * atrybutyList.Count;
+                    alfaAtrybuty[i] = wagaAlfa;
+                    sumaAlfaKryteria += alfaAtrybuty[i];
+                }
+                Label lbl2 = new Label();
+                this.Controls.Add(lbl2);
+                lbl2.Top = 350 + y * 20;
+                lbl2.Size = new Size(100, 16);
+                lbl2.ForeColor = Color.Black;
+                lbl2.Text = "Suma alfa: " + sumaAlfaKryteria.ToString("0.00");
+                lbl2.Left = 10;
+                y = y + 1;
+            }
+
+            catch (Exception r)
+            {
+
+                MessageBox.Show(r.Message);
+            }
         }
     }
 }
