@@ -235,26 +235,28 @@ namespace ahpW
             {
                 object[,] wKryteria = new object[dataGridView1.Rows.Count, dataGridView1.Columns.Count];
                 double[] vKryteria = new double[kryteriaList.Count + 1];
-                double row_sum = 0;
+                double row_sum = 1;
 
                 for (int x = 0; x < wKryteria.GetLength(0); x++)
                     for (int i = 0; i < wKryteria.GetLength(1); i++)
                         wKryteria[x, i] = dataGridView1.Rows[x].Cells[i].Value;
 
-                for (int x = 0; x < wKryteria.GetLength(0); x++)
+                for (int i = 0; i < wKryteria.GetLength(0); i++)
                 {
-                    if (x > 0)
-MNOŻENIE POPRAWIC//
-                    MessageBox.Show("" + row_sum);
-                    row_sum = Math.Pow(row_sum, 1.0 / kryteriaList.Count);
-                    vKryteria[x] = row_sum;
+                    if (i > 0)
+                    {
+                        row_sum = Math.Pow(row_sum, 1.0 / kryteriaList.Count);
+                        vKryteria[i] = row_sum;
+                    }
+                    row_sum = 1;
+                    for (int j = 0; j < wKryteria.GetLength(1); j++)
+                    {
+                        row_sum = row_sum * Convert.ToDouble(wKryteria[i, j]);
+                        MessageBox.Show("" + row_sum);
+                    }
                 }
-                row_sum = 1;
-                for (int i = 0; i < wKryteria.GetLength(1); i++)
-                {
-                    row_sum = row_sum + Convert.ToDouble(wKryteria[x, i]);
-                }
-            
+               
+
 
                 for (int i = 1; i <= kryteriaList.Count; i++) {
                 Label lbl = new Label();
@@ -262,7 +264,7 @@ MNOŻENIE POPRAWIC//
                 lbl.Top = 80 + x * 20;
                 lbl.Size = new Size(100, 16);
                 lbl.ForeColor = Color.Black;
-                lbl.Text = vKryteria[i].ToString();
+                lbl.Text = vKryteria[i].ToString("0.00");
                 lbl.Left = 690;
                 x = x + 1;
             }
