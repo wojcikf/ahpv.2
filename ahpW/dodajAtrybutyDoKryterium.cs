@@ -16,13 +16,20 @@ namespace ahpW
         List<atrybutyClass> atrybutyList = new List<atrybutyClass>();
         String nazwaKryterium;
         static int y = 0;
-        public dodajAtrybutyDoKryterium(Form1 f, List<atrybutyClass> atrybuty, String nazwa)
+        int id;
+        List<List<double>> alfaTab = new List<List<double>>();
+        public List<double> rTab = new List<double> { 0, 0, 0.52, 0.89, 1.11, 1.25, 1.35, 1.40, 1.45, 1.49 };
+
+
+        public dodajAtrybutyDoKryterium(Form1 f, List<atrybutyClass> atrybuty, String nazwa, int index, List<List<double>> alfaAlternatywy)
         {
             atrybutyClass a = new atrybutyClass();
             InitializeComponent();
             x = f;
+            id = index;
             atrybutyList = atrybuty;
             nazwaKryterium = nazwa;
+            alfaTab = alfaAlternatywy;
             label1.Text = nazwa;
             addData(atrybuty);
         }
@@ -186,6 +193,76 @@ namespace ahpW
                 lbl2.Text = "Suma alfa: " + sumaAlfaKryteria.ToString("0.00");
                 lbl2.Left = 10;
                 y = y + 1;
+
+                /*START COLUMN */
+
+
+                object[,] wAlternatywyColumn = new object[dataGridView1.Columns.Count, dataGridView1.Rows.Count];
+                double[] vAlretnatywyColumn = new double[atrybutyList.Count + 1];
+                double[] alfaKryteriaColumn = new double[atrybutyList.Count + 1];
+
+                double column_sumColumn = 0;
+                double sWagColumn = 0;
+                double wagaAlfaColumn = 0;
+
+
+                for (int x = 0; x < wAlternatywyColumn.GetLength(0); x++)
+                    for (int i = 0; i < wAlternatywyColumn.GetLength(0); i++)
+                        wAlternatywyColumn[i, x] = dataGridView1.Rows[x].Cells[i].Value;
+
+                for (int i = 0; i < wAlternatywyColumn.GetLength(0) + 1; i++)
+                {
+                    if (i > 0)
+                    {
+                        column_sumColumn = column_sumColumn * alfaAtrybuty[i];
+                        vAlretnatywyColumn[i] = column_sumColumn;
+                    }
+                    column_sumColumn = 0;
+                    if (i < atrybutyList.Count)
+                    {
+                        for (int j = 0; j < wAlternatywyColumn.GetLength(0); j++)
+                        {
+                            column_sumColumn += Convert.ToDouble(wAlternatywyColumn[i, j]);
+                        }
+                    }
+                }
+
+                for (int i = 1; i <= atrybutyList.Count; i++)
+                {
+
+                    if (i <= atrybutyList.Count)
+                    {
+                    }
+                    else
+                    {
+
+                        for (int x = 1; x <= atrybutyList.Count; x++)
+                        {
+                            sWagColumn += vAlretnatywyColumn[x];
+                        }
+
+                    }
+                }
+                double sumaAlfaKryteriaColumn = 0;
+                for (int i = 1; i <= atrybutyList.Count; i++)
+                {
+                    sumaAlfaKryteriaColumn += vAlretnatywyColumn[i];
+                }
+
+                double sumaLambdaMax = 0;
+                for (int i = 1; i <= atrybutyList.Count; i++) {
+                    sumaLambdaMax += vAlretnatywyColumn[i] * alfaAtrybuty[i];
+                }
+
+                for (int i = 1; i <= atrybutyList.Count; i++) {
+                 alfaTab[id].Add(alfaAtrybuty[i]);
+                }
+
+                /*END COLUMN */
+                double ci = ((sumaAlfaKryteriaColumn / (atrybutyList.Count)) - atrybutyList.Count) / (atrybutyList.Count - 1);
+                double cl = Math.Abs(ci / rTab[atrybutyList.Count]);
+                if (ci < 0.1 && cl < 0.1)
+                    MessageBox.Show("Spójność macierzy w normie. ");
             }
 
             catch (Exception r)

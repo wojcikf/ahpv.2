@@ -15,7 +15,11 @@ namespace ahpW
         List<kryteriaClass> kryteriaList = new List<kryteriaClass>();
         List<atrybutyClass> atrybutyList = new List<atrybutyClass>();
         List<WagiClass> wagiList = new List<WagiClass>();
+        List<List<double>> alfaAlternatywy = new List<List<double>>();
+        static int sizeKryteria = 0;
+        public double[] alfaKryt = new double[sizeKryteria];
         int[,] wagiKryteria = new int[5, 5];
+        public List<double> rTab = new List<double> {0, 0, 0.52, 0.89, 1.11, 1.25, 1.35, 1.40, 1.45, 1.49};
 
         float[] wKryteria = new float[10];
         static int x = 0;
@@ -213,7 +217,8 @@ namespace ahpW
         {
             ComboBox comboBox = (ComboBox)sender;
             string selected = (string)comboBox.SelectedItem;
-            dodajAtrybutyDoKryterium a = new dodajAtrybutyDoKryterium(this, atrybutyList, selected);
+            int index = comboBox.SelectedIndex;
+            dodajAtrybutyDoKryterium a = new dodajAtrybutyDoKryterium(this, atrybutyList, selected, index, alfaAlternatywy);
             DialogResult dr = a.ShowDialog();
         }
 
@@ -233,6 +238,7 @@ namespace ahpW
 
             try
             {
+                sizeKryteria = kryteriaList.Count;
                 object[,] wKryteria = new object[dataGridView1.Rows.Count, dataGridView1.Columns.Count];
                 double[] vKryteria = new double[kryteriaList.Count + 1];
                 double[] alfaKryteria = new double[kryteriaList.Count + 1];
@@ -371,21 +377,21 @@ namespace ahpW
                 lbl5.Top = 100 + x * 20;
                 lbl5.Size = new Size(200, 16);
                 lbl5.ForeColor = Color.Black;
-                lbl5.Text = "Suma lambda max / n: " + (sumaAlfaKryteriaColumn / (kryteriaList.Count - 1)).ToString();
+                lbl5.Text = "Suma lambda max / n: " + (sumaAlfaKryteriaColumn / (kryteriaList.Count)).ToString("0.00");
                 lbl5.Left = 670;
                 x = x + 1;
 
-                Label lbl6 = new Label();
-                this.Controls.Add(lbl6);
-                lbl6.Top = 100 + x * 20;
-                lbl6.Size = new Size(200, 16);
-                lbl6.ForeColor = Color.Black;
-                lbl6.Text = "Suma lambda max: " + sumaAlfaKryteriaColumn.ToString("0.00");
-                lbl6.Left = 670;
-                x = x + 1;
+                double ci = ((sumaAlfaKryteriaColumn / (kryteriaList.Count)) - kryteriaList.Count) / (kryteriaList.Count - 1);
+                double cl = Math.Abs(ci / rTab[kryteriaList.Count]);
+                if (ci < 0.1 && cl < 0.1)
+                    MessageBox.Show("Spójność macierzy w normie. ");
+               
 
+                for (int i = 0; i <= kryteriaList.Count; i++) {
+                    alfaAlternatywy.Add(new List<double>());
+                }
 
-
+                alfaKryt = alfaKryteria;
             }
 
             catch (Exception r)
@@ -398,6 +404,29 @@ namespace ahpW
         private void label3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+           List<double> wynikKoncowy = new List<double>();
+            double result = 0.0;
+            for (int k = 0; k < atrybutyList.Count; k++)
+            {
+                result = 0.0;
+                for (int j = 1; j < kryteriaList.Count; j++)
+                {
+                    result += alfaKryt[j] * alfaAlternatywy[j][k];
+                }
+                wynikKoncowy.Add(result);
+            }
+            double maxKoncowy = wynikKoncowy.Max();
+            int idKoncowy = wynikKoncowy.FindIndex(x => x == maxKoncowy);
+            var nKoncowy = kryteriaList.SingleOrDefault(x => x.Id == idKoncowy);
+
+            string nazwKoncowy = nKoncowy.nazwaKryterium;
+
+            MessageBox.Show(nazwKoncowy);
+            
         }
     }
 }
