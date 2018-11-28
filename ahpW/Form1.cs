@@ -21,12 +21,15 @@ namespace ahpW
         int[,] wagiKryteria = new int[5, 5];
         public List<double> rTab = new List<double> {0, 0, 0.52, 0.89, 1.11, 1.25, 1.35, 1.40, 1.45, 1.49};
 
+        bool wagiCheck = false;
+
         float[] wKryteria = new float[10];
         static int x = 0;
         public Form1()
         {
             InitializeComponent();
-
+            button3.Enabled = false;
+            comboBox1.Enabled = false;
 
         }
 
@@ -42,9 +45,26 @@ namespace ahpW
                 button1.Visible = false;
             }
         }
-
+        public bool checkValues(object[,] tab)
+        {
+            for (int x = 0; x < kryteriaList.Count; x++)
+            {
+                for (int i = 0; i < kryteriaList.Count; i++)
+                {
+                    if ((object)tab[x, i] == null)
+                    {
+                        MessageBox.Show("Uzupełnij macierz do końca.");
+                        return false;
+                    } 
+                }
+            }
+            wagiCheck = true;
+            comboBox1.Enabled = true;
+            return true;
+        }
         public void addKryterium(kryteriaClass k)
         {
+
             kryteriaList.Add(k);
 
             comboBox1.Items.Add(k.nazwaKryterium);
@@ -53,24 +73,43 @@ namespace ahpW
             {
                 treeView1.Nodes.Add("KryteriaMain", "Kryteria");
                 treeView1.Nodes["KryteriaMain"].Nodes.Add(k.nazwaKryterium);
+                treeView1.ExpandAll();
             }
             else
             {
                 treeView1.Nodes["KryteriaMain"].Nodes.Add(k.nazwaKryterium);
             }
+
+            if (kryteriaList.Count > 1)
+                button3.Enabled = true;
+
+            if (kryteriaList.Count > 1 && atrybutyList.Count > 1 && wagiCheck == true)
+                comboBox1.Enabled = true;
+
         }
         public void addAtrybuty(atrybutyClass a)
         {
-            atrybutyList.Add(a);
+            if (a.nazwaAtrybutu != "")
+            {
+                atrybutyList.Add(a);
 
-            if (atrybutyList.Count == 1)
-            {
-                treeView1.Nodes.Add("AtrybutyMain", "Atrybuty");
-                treeView1.Nodes["AtrybutyMain"].Nodes.Add(a.nazwaAtrybutu);
+                if (atrybutyList.Count == 1)
+                {
+                    treeView1.Nodes.Add("AtrybutyMain", "Atrybuty");
+                    treeView1.Nodes["AtrybutyMain"].Nodes.Add(a.nazwaAtrybutu);
+                    treeView1.ExpandAll();
+                }
+                else
+                {
+                    treeView1.Nodes["AtrybutyMain"].Nodes.Add(a.nazwaAtrybutu);
+                }
+
+
+                if (kryteriaList.Count > 1 && atrybutyList.Count > 1 && wagiCheck == true)
+                    comboBox1.Enabled = true;
             }
-            else
-            {
-                treeView1.Nodes["AtrybutyMain"].Nodes.Add(a.nazwaAtrybutu);
+            else {
+                MessageBox.Show("Musisz podać atrybut");
             }
 
         }
@@ -215,11 +254,13 @@ namespace ahpW
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            
             ComboBox comboBox = (ComboBox)sender;
             string selected = (string)comboBox.SelectedItem;
             int index = comboBox.SelectedIndex;
             dodajAtrybutyDoKryterium a = new dodajAtrybutyDoKryterium(this, atrybutyList, selected, index, alfaAlternatywy);
             DialogResult dr = a.ShowDialog();
+
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -265,135 +306,139 @@ namespace ahpW
                         row_sum = row_sum * Convert.ToDouble(wKryteria[i, j]);
                     }
                 }
-
-                for (int i = 1; i <= kryteriaList.Count + 1; i++)
+                if (checkValues(wKryteria) == true)
                 {
-
-                    if (i <= kryteriaList.Count)
-                    {
-                    }
-                    else
+                    for (int i = 1; i <= kryteriaList.Count + 1; i++)
                     {
 
-                        for (int x = 1; x <= kryteriaList.Count; x++)
+                        if (i <= kryteriaList.Count)
                         {
-                            sWag += vKryteria[x];
                         }
-                        Label lbl = new Label();
-                        this.Controls.Add(lbl);
-                        lbl.Top = 80 + x * 20;
-                        lbl.Size = new Size(100, 16);
-                        lbl.ForeColor = Color.Black;
-                        lbl.Text = "Suma: " + sWag.ToString("0.00");
-                        lbl.Left = 670;
-                        x = x + 1;
-                    }
-                }
-                double sumaAlfaKryteria = 0;
-                for (int i = 1; i <= kryteriaList.Count; i++)
-                {
-                    wagaAlfa = (vKryteria[i] / sWag) * kryteriaList.Count;
-                    alfaKryteria[i] = wagaAlfa;
-                    sumaAlfaKryteria += alfaKryteria[i];
-                }
-                Label lbl2 = new Label();
-                this.Controls.Add(lbl2);
-                lbl2.Top = 80 + x * 20;
-                lbl2.Size = new Size(100, 16);
-                lbl2.ForeColor = Color.Black;
-                lbl2.Text = "Suma alfa: " + sumaAlfaKryteria.ToString("0.00");
-                lbl2.Left = 670;
-                x = x + 1;
-
-                /*END WIERSZE*/
-
-                /*START COLUMN */
-
-
-                object[,] wKryteriaColumn = new object[dataGridView1.Columns.Count, dataGridView1.Rows.Count];
-                double[] vKryteriaColumn = new double[kryteriaList.Count + 1];
-                double[] alfaKryteriaColumn = new double[kryteriaList.Count + 1];
-
-                double column_sumColumn = 0;
-                double sWagColumn = 0;
-                double wagaAlfaColumn = 0;
-
-
-                for (int x = 0; x < wKryteriaColumn.GetLength(0); x++)
-                    for (int i = 0; i < wKryteriaColumn.GetLength(0); i++)
-                        wKryteriaColumn[i, x] = dataGridView1.Rows[x].Cells[i].Value;
-
-                for (int i = 0; i < wKryteriaColumn.GetLength(0)+1; i++)
-                {
-                    if (i > 0)
-                    {
-                        column_sumColumn = column_sumColumn * alfaKryteria[i];
-                        vKryteriaColumn[i] = column_sumColumn;
-                    }
-                    column_sumColumn = 0;
-                    if (i < kryteriaList.Count)
-                    {
-                        for (int j = 0; j < wKryteriaColumn.GetLength(0); j++)
+                        else
                         {
-                            column_sumColumn += Convert.ToDouble(wKryteriaColumn[i, j]);
+
+                            for (int x = 1; x <= kryteriaList.Count; x++)
+                            {
+                                sWag += vKryteria[x];
+                            }
+                            label3.Visible = true;
+                            Label lbl = new Label();
+                            this.Controls.Add(lbl);
+                            lbl.Top = 80 + x * 20;
+                            lbl.Size = new Size(100, 16);
+                            lbl.ForeColor = Color.Black;
+                            lbl.Text = "Suma: " + sWag.ToString("0.00");
+                            lbl.Left = 670;
+                            x = x + 1;
+
                         }
                     }
-                }
-
-                for (int i = 1; i <= kryteriaList.Count; i++)
-                {
-
-                    if (i <= kryteriaList.Count)
+                    double sumaAlfaKryteria = 0;
+                    for (int i = 1; i <= kryteriaList.Count; i++)
                     {
+                        wagaAlfa = (vKryteria[i] / sWag) * kryteriaList.Count;
+                        alfaKryteria[i] = wagaAlfa;
+                        sumaAlfaKryteria += alfaKryteria[i];
                     }
-                    else
-                    {
+                    Label lbl2 = new Label();
+                    this.Controls.Add(lbl2);
+                    lbl2.Top = 80 + x * 20;
+                    lbl2.Size = new Size(100, 16);
+                    lbl2.ForeColor = Color.Black;
+                    lbl2.Text = "Suma alfa: " + sumaAlfaKryteria.ToString("0.00");
+                    lbl2.Left = 670;
+                    x = x + 1;
 
-                        for (int x = 1; x <= kryteriaList.Count; x++)
+                    /*END WIERSZE*/
+
+                    /*START COLUMN */
+
+
+                    object[,] wKryteriaColumn = new object[dataGridView1.Columns.Count, dataGridView1.Rows.Count];
+                    double[] vKryteriaColumn = new double[kryteriaList.Count + 1];
+                    double[] alfaKryteriaColumn = new double[kryteriaList.Count + 1];
+
+                    double column_sumColumn = 0;
+                    double sWagColumn = 0;
+                    double wagaAlfaColumn = 0;
+
+
+                    for (int x = 0; x < wKryteriaColumn.GetLength(0); x++)
+                        for (int i = 0; i < wKryteriaColumn.GetLength(0); i++)
+                            wKryteriaColumn[i, x] = dataGridView1.Rows[x].Cells[i].Value;
+
+                    for (int i = 0; i < wKryteriaColumn.GetLength(0) + 1; i++)
+                    {
+                        if (i > 0)
                         {
-                            sWagColumn += vKryteriaColumn[x];
+                            column_sumColumn = column_sumColumn * alfaKryteria[i];
+                            vKryteriaColumn[i] = column_sumColumn;
                         }
-                       
+                        column_sumColumn = 0;
+                        if (i < kryteriaList.Count)
+                        {
+                            for (int j = 0; j < wKryteriaColumn.GetLength(0); j++)
+                            {
+                                column_sumColumn += Convert.ToDouble(wKryteriaColumn[i, j]);
+                            }
+                        }
                     }
+
+                    for (int i = 1; i <= kryteriaList.Count; i++)
+                    {
+
+                        if (i <= kryteriaList.Count)
+                        {
+                        }
+                        else
+                        {
+
+                            for (int x = 1; x <= kryteriaList.Count; x++)
+                            {
+                                sWagColumn += vKryteriaColumn[x];
+                            }
+
+                        }
+                    }
+                    double sumaAlfaKryteriaColumn = 0;
+                    for (int i = 1; i <= kryteriaList.Count; i++)
+                    {
+                        sumaAlfaKryteriaColumn += vKryteriaColumn[i];
+                    }
+                    Label lbl4 = new Label();
+                    this.Controls.Add(lbl4);
+                    lbl4.Top = 100 + x * 20;
+                    lbl4.Size = new Size(200, 16);
+                    lbl4.ForeColor = Color.Black;
+                    lbl4.Text = "Suma lambda max: " + sumaAlfaKryteriaColumn.ToString("0.00");
+                    lbl4.Left = 670;
+                    x = x + 1;
+
+                    double n = ((sumaAlfaKryteriaColumn / (kryteriaList.Count - 1)));
+
+                    Label lbl5 = new Label();
+                    this.Controls.Add(lbl5);
+                    lbl5.Top = 100 + x * 20;
+                    lbl5.Size = new Size(200, 16);
+                    lbl5.ForeColor = Color.Black;
+                    lbl5.Text = "Suma lambda max / n: " + (sumaAlfaKryteriaColumn / (kryteriaList.Count)).ToString("0.00");
+                    lbl5.Left = 670;
+                    x = x + 1;
+
+                    double ci = ((sumaAlfaKryteriaColumn / (kryteriaList.Count)) - kryteriaList.Count) / (kryteriaList.Count - 1);
+                    double cl = Math.Abs(ci / rTab[kryteriaList.Count]);
+                    if (ci < 0.1 && cl < 0.1)
+                        MessageBox.Show("Spójność macierzy w normie. ");
+
+
+                    for (int i = 0; i <= kryteriaList.Count; i++)
+                    {
+                        alfaAlternatywy.Add(new List<double>());
+                    }
+
+                    alfaKryt = alfaKryteria;
                 }
-                double sumaAlfaKryteriaColumn = 0;
-                for (int i = 1; i <= kryteriaList.Count; i++)
-                {
-                    sumaAlfaKryteriaColumn += vKryteriaColumn[i];
-                }
-                Label lbl4 = new Label();
-                this.Controls.Add(lbl4);
-                lbl4.Top = 100 + x * 20;
-                lbl4.Size = new Size(200, 16);
-                lbl4.ForeColor = Color.Black;
-                lbl4.Text = "Suma lambda max: " + sumaAlfaKryteriaColumn.ToString("0.00");
-                lbl4.Left = 670;
-                x = x + 1;
-
-                double n = ((sumaAlfaKryteriaColumn / (kryteriaList.Count - 1)));
-
-                Label lbl5 = new Label();
-                this.Controls.Add(lbl5);
-                lbl5.Top = 100 + x * 20;
-                lbl5.Size = new Size(200, 16);
-                lbl5.ForeColor = Color.Black;
-                lbl5.Text = "Suma lambda max / n: " + (sumaAlfaKryteriaColumn / (kryteriaList.Count)).ToString("0.00");
-                lbl5.Left = 670;
-                x = x + 1;
-
-                double ci = ((sumaAlfaKryteriaColumn / (kryteriaList.Count)) - kryteriaList.Count) / (kryteriaList.Count - 1);
-                double cl = Math.Abs(ci / rTab[kryteriaList.Count]);
-                if (ci < 0.1 && cl < 0.1)
-                    MessageBox.Show("Spójność macierzy w normie. ");
-               
-
-                for (int i = 0; i <= kryteriaList.Count; i++) {
-                    alfaAlternatywy.Add(new List<double>());
-                }
-
-                alfaKryt = alfaKryteria;
             }
-
             catch (Exception r)
             {
 
@@ -425,8 +470,22 @@ namespace ahpW
 
             string nazwKoncowy = nKoncowy.nazwaKryterium;
 
-            MessageBox.Show(nazwKoncowy);
-            
+            MessageBox.Show("Wygrywa: " + nazwKoncowy);
+            wynikKoncowy.Sort();
+
+            listView1.View = View.Details;
+            listView1.Columns.Add("Miejsce", 100, HorizontalAlignment.Left);
+            listView1.Columns.Add("Nazwa", 200, HorizontalAlignment.Left);
+
+            for (int i = 0; i < kryteriaList.Count-1; i++) {
+                listView1.Items.Add(new ListViewItem(new string[] { (i + 1).ToString(), Convert.ToString(wynikKoncowy[i]) }));
+            }
+
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

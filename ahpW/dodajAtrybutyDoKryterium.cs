@@ -34,7 +34,22 @@ namespace ahpW
             addData(atrybuty);
         }
 
-        
+        public bool checkValues(object[,] tab)
+        {
+            for (int x = 0; x < atrybutyList.Count; x++)
+            {
+                for (int i = 0; i < atrybutyList.Count; i++)
+                {
+                    if ((object)tab[x, i] == null)
+                    {
+                        MessageBox.Show("Uzupełnij macierz do końca.");
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
@@ -133,7 +148,7 @@ namespace ahpW
             {
                 object[,] wAtrybuty = new object[dataGridView1.Rows.Count, dataGridView1.Columns.Count];
                 double[] vAtrybuty = new double[atrybutyList.Count + 1];
-                double[] alfaAtrybuty= new double[atrybutyList.Count + 1];
+                double[] alfaAtrybuty = new double[atrybutyList.Count + 1];
                 double row_sum = 1;
                 double sWag = 0;
                 double wagaAlfa = 0;
@@ -154,117 +169,122 @@ namespace ahpW
                         row_sum = row_sum * Convert.ToDouble(wAtrybuty[i, j]);
                     }
                 }
-
-                for (int i = 1; i <= atrybutyList.Count + 1; i++)
+                if (checkValues(wAtrybuty) == true)
                 {
-
-                    if (i <= atrybutyList.Count)
-                    {
-                    }
-                    else
+                    for (int i = 1; i <= atrybutyList.Count + 1; i++)
                     {
 
-                        for (int x = 1; x <= atrybutyList.Count; x++)
+                        if (i <= atrybutyList.Count)
                         {
-                            sWag += vAtrybuty[x];
                         }
-                        Label lbl = new Label();
-                        this.Controls.Add(lbl);
-                        lbl.Top = 350 + y * 20;
-                        lbl.Size = new Size(100, 16);
-                        lbl.ForeColor = Color.Black;
-                        lbl.Text = "Suma: " + sWag.ToString("0.00");
-                        lbl.Left = 10;
-                        y = y + 1;
-                    }
-                }
-                double sumaAlfaKryteria = 0;
-                for (int i = 1; i <= atrybutyList.Count; i++)
-                {
-                    wagaAlfa = (vAtrybuty[i] / sWag) * atrybutyList.Count;
-                    alfaAtrybuty[i] = wagaAlfa;
-                    sumaAlfaKryteria += alfaAtrybuty[i];
-                }
-                Label lbl2 = new Label();
-                this.Controls.Add(lbl2);
-                lbl2.Top = 350 + y * 20;
-                lbl2.Size = new Size(100, 16);
-                lbl2.ForeColor = Color.Black;
-                lbl2.Text = "Suma alfa: " + sumaAlfaKryteria.ToString("0.00");
-                lbl2.Left = 10;
-                y = y + 1;
-
-                /*START COLUMN */
-
-
-                object[,] wAlternatywyColumn = new object[dataGridView1.Columns.Count, dataGridView1.Rows.Count];
-                double[] vAlretnatywyColumn = new double[atrybutyList.Count + 1];
-                double[] alfaKryteriaColumn = new double[atrybutyList.Count + 1];
-
-                double column_sumColumn = 0;
-                double sWagColumn = 0;
-                double wagaAlfaColumn = 0;
-
-
-                for (int x = 0; x < wAlternatywyColumn.GetLength(0); x++)
-                    for (int i = 0; i < wAlternatywyColumn.GetLength(0); i++)
-                        wAlternatywyColumn[i, x] = dataGridView1.Rows[x].Cells[i].Value;
-
-                for (int i = 0; i < wAlternatywyColumn.GetLength(0) + 1; i++)
-                {
-                    if (i > 0)
-                    {
-                        column_sumColumn = column_sumColumn * alfaAtrybuty[i];
-                        vAlretnatywyColumn[i] = column_sumColumn;
-                    }
-                    column_sumColumn = 0;
-                    if (i < atrybutyList.Count)
-                    {
-                        for (int j = 0; j < wAlternatywyColumn.GetLength(0); j++)
+                        else
                         {
-                            column_sumColumn += Convert.ToDouble(wAlternatywyColumn[i, j]);
+
+                            for (int x = 1; x <= atrybutyList.Count; x++)
+                            {
+                                sWag += vAtrybuty[x];
+                            }
+                            Label lbl = new Label();
+                            this.Controls.Add(lbl);
+                            lbl.Top = 350 + y * 20;
+                            lbl.Size = new Size(100, 16);
+                            lbl.ForeColor = Color.Black;
+                            lbl.Text = "Suma: " + sWag.ToString("0.00");
+                            lbl.Left = 10;
+                            y = y + 1;
                         }
                     }
-                }
-
-                for (int i = 1; i <= atrybutyList.Count; i++)
-                {
-
-                    if (i <= atrybutyList.Count)
+                    double sumaAlfaKryteria = 0;
+                    for (int i = 1; i <= atrybutyList.Count; i++)
                     {
+                        wagaAlfa = (vAtrybuty[i] / sWag) * atrybutyList.Count;
+                        alfaAtrybuty[i] = wagaAlfa;
+                        sumaAlfaKryteria += alfaAtrybuty[i];
                     }
-                    else
-                    {
+                    Label lbl2 = new Label();
+                    this.Controls.Add(lbl2);
+                    lbl2.Top = 350 + y * 20;
+                    lbl2.Size = new Size(100, 16);
+                    lbl2.ForeColor = Color.Black;
+                    lbl2.Text = "Suma alfa: " + sumaAlfaKryteria.ToString("0.00");
+                    lbl2.Left = 10;
+                    y = y + 1;
 
-                        for (int x = 1; x <= atrybutyList.Count; x++)
+                    /*START COLUMN */
+
+
+                    object[,] wAlternatywyColumn = new object[dataGridView1.Columns.Count, dataGridView1.Rows.Count];
+                    double[] vAlretnatywyColumn = new double[atrybutyList.Count + 1];
+                    double[] alfaKryteriaColumn = new double[atrybutyList.Count + 1];
+
+                    double column_sumColumn = 0;
+                    double sWagColumn = 0;
+                    double wagaAlfaColumn = 0;
+
+
+                    for (int x = 0; x < wAlternatywyColumn.GetLength(0); x++)
+                        for (int i = 0; i < wAlternatywyColumn.GetLength(0); i++)
+                            wAlternatywyColumn[i, x] = dataGridView1.Rows[x].Cells[i].Value;
+
+                    for (int i = 0; i < wAlternatywyColumn.GetLength(0) + 1; i++)
+                    {
+                        if (i > 0)
                         {
-                            sWagColumn += vAlretnatywyColumn[x];
+                            column_sumColumn = column_sumColumn * alfaAtrybuty[i];
+                            vAlretnatywyColumn[i] = column_sumColumn;
                         }
-
+                        column_sumColumn = 0;
+                        if (i < atrybutyList.Count)
+                        {
+                            for (int j = 0; j < wAlternatywyColumn.GetLength(0); j++)
+                            {
+                                column_sumColumn += Convert.ToDouble(wAlternatywyColumn[i, j]);
+                            }
+                        }
                     }
-                }
-                double sumaAlfaKryteriaColumn = 0;
-                for (int i = 1; i <= atrybutyList.Count; i++)
-                {
-                    sumaAlfaKryteriaColumn += vAlretnatywyColumn[i];
-                }
 
-                double sumaLambdaMax = 0;
-                for (int i = 1; i <= atrybutyList.Count; i++) {
-                    sumaLambdaMax += vAlretnatywyColumn[i] * alfaAtrybuty[i];
-                }
+                    for (int i = 1; i <= atrybutyList.Count; i++)
+                    {
 
-                for (int i = 1; i <= atrybutyList.Count; i++) {
-                 alfaTab[id].Add(alfaAtrybuty[i]);
-                }
+                        if (i <= atrybutyList.Count)
+                        {
+                        }
+                        else
+                        {
 
-                /*END COLUMN */
-                double ci = ((sumaAlfaKryteriaColumn / (atrybutyList.Count)) - atrybutyList.Count) / (atrybutyList.Count - 1);
-                double cl = Math.Abs(ci / rTab[atrybutyList.Count]);
-                if (ci < 0.1 && cl < 0.1)
-                    MessageBox.Show("Spójność macierzy w normie. ");
+                            for (int x = 1; x <= atrybutyList.Count; x++)
+                            {
+                                sWagColumn += vAlretnatywyColumn[x];
+                            }
+
+                        }
+                    }
+                    double sumaAlfaKryteriaColumn = 0;
+                    for (int i = 1; i <= atrybutyList.Count; i++)
+                    {
+                        sumaAlfaKryteriaColumn += vAlretnatywyColumn[i];
+                    }
+
+                    double sumaLambdaMax = 0;
+                    for (int i = 1; i <= atrybutyList.Count; i++)
+                    {
+                        sumaLambdaMax += vAlretnatywyColumn[i] * alfaAtrybuty[i];
+                    }
+
+                    for (int i = 1; i <= atrybutyList.Count; i++)
+                    {
+                        alfaTab[id].Add(alfaAtrybuty[i]);
+                    }
+
+                    /*END COLUMN */
+                    double ci = ((sumaAlfaKryteriaColumn / (atrybutyList.Count)) - atrybutyList.Count) / (atrybutyList.Count - 1);
+                    double cl = Math.Abs(ci / rTab[atrybutyList.Count]);
+                    if (ci < 0.1 && cl < 0.1)
+                        MessageBox.Show("Spójność macierzy w normie. ");
+                }
+                y = 0;
+                this.Close();
             }
-
             catch (Exception r)
             {
 
