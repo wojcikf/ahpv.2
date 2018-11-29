@@ -92,7 +92,7 @@ namespace ahpW
             {
                 MessageBox.Show(x.Message);
             }
-
+            
         }
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -212,7 +212,6 @@ namespace ahpW
 
                     /*START COLUMN */
 
-
                     object[,] wAlternatywyColumn = new object[dataGridView1.Columns.Count, dataGridView1.Rows.Count];
                     double[] vAlretnatywyColumn = new double[atrybutyList.Count + 1];
                     double[] alfaKryteriaColumn = new double[atrybutyList.Count + 1];
@@ -280,10 +279,17 @@ namespace ahpW
                     double ci = ((sumaAlfaKryteriaColumn / (atrybutyList.Count)) - atrybutyList.Count) / (atrybutyList.Count - 1);
                     double cl = Math.Abs(ci / rTab[atrybutyList.Count]);
                     if (ci < 0.1 && cl < 0.1)
+                    {
                         MessageBox.Show("Spójność macierzy w normie. ");
+                        y = 0;
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Brak spójności macierzy.");
+                    }
                 }
-                y = 0;
-                this.Close();
+               
             }
             catch (Exception r)
             {

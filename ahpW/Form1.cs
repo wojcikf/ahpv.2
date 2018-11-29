@@ -16,10 +16,13 @@ namespace ahpW
         List<atrybutyClass> atrybutyList = new List<atrybutyClass>();
         List<WagiClass> wagiList = new List<WagiClass>();
         List<List<double>> alfaAlternatywy = new List<List<double>>();
+        bool checkScore = false;
         static int sizeKryteria = 0;
         public double[] alfaKryt = new double[sizeKryteria];
         int[,] wagiKryteria = new int[5, 5];
         public List<double> rTab = new List<double> {0, 0, 0.52, 0.89, 1.11, 1.25, 1.35, 1.40, 1.45, 1.49};
+
+        Button buttonScore = new Button();
 
         bool wagiCheck = false;
 
@@ -31,6 +34,8 @@ namespace ahpW
             button3.Enabled = false;
             comboBox1.Enabled = false;
 
+            button4 = buttonScore;
+            buttonScore.Enabled = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -453,34 +458,48 @@ namespace ahpW
 
         private void button4_Click(object sender, EventArgs e)
         {
-           List<double> wynikKoncowy = new List<double>();
-            double result = 0.0;
-            for (int k = 0; k < atrybutyList.Count; k++)
+            if (alfaAlternatywy.Count-1 == atrybutyList.Count)
             {
-                result = 0.0;
-                for (int j = 1; j < kryteriaList.Count; j++)
+
+                List<double> wynikKoncowy = new List<double>();
+                double result = 0.0;
+                for (int k = 0; k < atrybutyList.Count; k++)
                 {
-                    result += alfaKryt[j] * alfaAlternatywy[j][k];
+                    result = 0.0;
+                    for (int j = 1; j < kryteriaList.Count; j++)
+                    {
+                        result += alfaKryt[j] * alfaAlternatywy[j][k];
+                    }
+                    wynikKoncowy.Add(result);
                 }
-                wynikKoncowy.Add(result);
+                List<double> listOriginal = wynikKoncowy.ToList();
+                wynikKoncowy.Sort();
+                wynikKoncowy.Reverse();
+
+
+                double value = 0.0;
+                int nameId;
+                string name = "";
+                string text = "";
+
+
+                listView1.View = View.Details;
+                listView1.Columns.Add("Miejsce", 100, HorizontalAlignment.Left);
+                listView1.Columns.Add("Nazwa", 200, HorizontalAlignment.Left);
+                listView1.Columns.Add("Wynik", 200, HorizontalAlignment.Left);
+
+                for (int i = 0; i < wynikKoncowy.Count; i++)
+                {
+                    value = wynikKoncowy[i];
+                    nameId = listOriginal.FindIndex(x => x == value);
+                    name = atrybutyList[nameId].nazwaAtrybutu;
+
+                    listView1.Items.Add(new ListViewItem(new string[] { (i + 1).ToString(), name, value.ToString() }));
+                }
+
             }
-            double maxKoncowy = wynikKoncowy.Max();
-            int idKoncowy = wynikKoncowy.FindIndex(x => x == maxKoncowy);
-            var nKoncowy = kryteriaList.SingleOrDefault(x => x.Id == idKoncowy);
-
-            string nazwKoncowy = nKoncowy.nazwaKryterium;
-
-            MessageBox.Show("Wygrywa: " + nazwKoncowy);
-            wynikKoncowy.Sort();
-
-            listView1.View = View.Details;
-            listView1.Columns.Add("Miejsce", 100, HorizontalAlignment.Left);
-            listView1.Columns.Add("Nazwa", 200, HorizontalAlignment.Left);
-
-            for (int i = 0; i < kryteriaList.Count-1; i++) {
-                listView1.Items.Add(new ListViewItem(new string[] { (i + 1).ToString(), Convert.ToString(wynikKoncowy[i]) }));
-            }
-
+            else
+                MessageBox.Show("Nie wszystkie alternatywy zostały uzupełnione.");
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
