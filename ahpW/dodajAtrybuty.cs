@@ -18,6 +18,7 @@ namespace ahpW
         {
             InitializeComponent();
             x = f;
+            this.Text = "Dodaj nową alternatywę";
         }
 
         private void dodajAtrybuty_Load(object sender, EventArgs e)

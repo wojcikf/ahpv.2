@@ -36,6 +36,8 @@ namespace ahpW
 
             button4 = buttonScore;
             buttonScore.Enabled = false;
+            this.Text = "Wybór optymalnej decyzji metodą AHP";
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -219,9 +221,26 @@ namespace ahpW
                                 var waga = dataGridView1.Rows[i].Cells[j].Value;
                                 string waga1 = waga.ToString();
                                 double w = Convert.ToDouble(waga1);
-                                w = 1 / w;
-                                dataGridView1.Rows[j].Cells[i].Value = w;
-                                dataGridView1.Rows[j].Cells[i].ReadOnly = true;
+                                bool czyMniejsza = false;
+                                if (w < 0)
+                                {
+                                    dataGridView1.Rows[i].Cells[j].Value = Math.Round((Convert.ToDouble((1 / w)) * -1),2);
+                                    czyMniejsza = true;
+                                }
+                                if (czyMniejsza == true)
+                                {
+                                    dataGridView1.Rows[j].Cells[i].Value = Math.Round((w * -1),2);
+                                    dataGridView1.Rows[j].Cells[i].ReadOnly = true;
+                                }
+                                if (czyMniejsza == false)
+                                {
+                                    w = 1 / w;
+                                    if(w>1)
+                                    dataGridView1.Rows[j].Cells[i].Value = Math.Round(w,0);
+                                    else
+                                    dataGridView1.Rows[j].Cells[i].Value = Math.Round(w, 2);
+                                    dataGridView1.Rows[j].Cells[i].ReadOnly = true;
+                                }
                             }
                         }
                         catch (Exception x)
@@ -259,12 +278,17 @@ namespace ahpW
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
-            ComboBox comboBox = (ComboBox)sender;
-            string selected = (string)comboBox.SelectedItem;
-            int index = comboBox.SelectedIndex;
-            dodajAtrybutyDoKryterium a = new dodajAtrybutyDoKryterium(this, atrybutyList, selected, index, alfaAlternatywy);
-            DialogResult dr = a.ShowDialog();
+            if (atrybutyList.Count > 1)
+            {
+                ComboBox comboBox = (ComboBox)sender;
+                string selected = (string)comboBox.SelectedItem;
+                int index = comboBox.SelectedIndex;
+                dodajAtrybutyDoKryterium a = new dodajAtrybutyDoKryterium(this, atrybutyList, selected, index, alfaAlternatywy);
+                DialogResult dr = a.ShowDialog();
+            }
+            else {
+                MessageBox.Show("Nie zostały dodane żadne alternatwy. Dodaj przynajmniej 2 alretnatywy i wróć ponownie.");
+            }
 
         }
 
@@ -333,7 +357,7 @@ namespace ahpW
                             lbl.Size = new Size(100, 16);
                             lbl.ForeColor = Color.Black;
                             lbl.Text = "Suma: " + sWag.ToString("0.00");
-                            lbl.Left = 670;
+                            lbl.Left = 570;
                             x = x + 1;
 
                         }
@@ -351,7 +375,7 @@ namespace ahpW
                     lbl2.Size = new Size(100, 16);
                     lbl2.ForeColor = Color.Black;
                     lbl2.Text = "Suma alfa: " + sumaAlfaKryteria.ToString("0.00");
-                    lbl2.Left = 670;
+                    lbl2.Left = 570;
                     x = x + 1;
 
                     /*END WIERSZE*/
@@ -416,7 +440,7 @@ namespace ahpW
                     lbl4.Size = new Size(200, 16);
                     lbl4.ForeColor = Color.Black;
                     lbl4.Text = "Suma lambda max: " + sumaAlfaKryteriaColumn.ToString("0.00");
-                    lbl4.Left = 670;
+                    lbl4.Left = 570;
                     x = x + 1;
 
                     double n = ((sumaAlfaKryteriaColumn / (kryteriaList.Count - 1)));
@@ -427,7 +451,7 @@ namespace ahpW
                     lbl5.Size = new Size(200, 16);
                     lbl5.ForeColor = Color.Black;
                     lbl5.Text = "Suma lambda max / n: " + (sumaAlfaKryteriaColumn / (kryteriaList.Count)).ToString("0.00");
-                    lbl5.Left = 670;
+                    lbl5.Left = 570;
                     x = x + 1;
 
                     double ci = ((sumaAlfaKryteriaColumn / (kryteriaList.Count)) - kryteriaList.Count) / (kryteriaList.Count - 1);
@@ -458,7 +482,8 @@ namespace ahpW
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (alfaAlternatywy.Count-1 == atrybutyList.Count)
+            int rozmiar = kryteriaList.Count-1;
+            if (alfaAlternatywy[rozmiar].Count > 0)
             {
 
                 List<double> wynikKoncowy = new List<double>();

@@ -23,38 +23,6 @@ namespace ahpW
             ComboBox[] comboBox = new ComboBox[kryteriaList.Count];
             int licznik = 40;
 
-            /*for (int i = 0; i < kryteriaList.Count; i++) {
-
-
-
-                    TextBox textBoxAdd = new TextBox();
-                textBoxAdd.Location = new Point(73, licznik);
-                textBoxAdd.Name = "k"+i;
-
-                Label labelBoxAdd = new Label();
-                Label labelBoxAdd2 = new Label();
-
-                //1
-                labelBoxAdd.Text = kryteriaList[i].nazwaKryterium;
-                labelBoxAdd.Width = 60;
-                labelBoxAdd.Location = new Point(13, licznik);
-
-                if (i + 1 < kryteriaList.Count)
-                {
-
-                    labelBoxAdd2.Text = kryteriaList[i + 1].nazwaKryterium;
-                    labelBoxAdd2.Width = 60;
-                    labelBoxAdd2.Location = new Point(173, licznik);
-                    this.Controls.Add(labelBoxAdd);
-                    this.Controls.Add(labelBoxAdd2);
-                    this.Controls.Add(textBoxAdd);
-                }
-
-                licznik+=40;
-                
-            }*/
-
-
             int space2 = 10;
             for (int i = 0; i < kryteriaList.Count; i++)
             {

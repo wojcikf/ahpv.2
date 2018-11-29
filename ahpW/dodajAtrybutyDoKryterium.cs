@@ -32,6 +32,7 @@ namespace ahpW
             alfaTab = alfaAlternatywy;
             label1.Text = nazwa;
             addData(atrybuty);
+            this.Text = "Ustal wartość alretnatyw dla kryterium: " + nazwaKryterium;
         }
 
         public bool checkValues(object[,] tab)
@@ -111,9 +112,26 @@ namespace ahpW
                                 var waga = dataGridView1.Rows[i].Cells[j].Value;
                                 string waga1 = waga.ToString();
                                 double w = Convert.ToDouble(waga1);
-                                w = 1 / w;
-                                dataGridView1.Rows[j].Cells[i].Value = w;
-                                dataGridView1.Rows[j].Cells[i].ReadOnly = true;
+                                bool czyMniejsza = false;
+                                if (w < 0)
+                                {
+                                    dataGridView1.Rows[i].Cells[j].Value = Math.Round((Convert.ToDouble((1 / w)) * -1), 2);
+                                    czyMniejsza = true;
+                                }
+                                if (czyMniejsza == true)
+                                {
+                                    dataGridView1.Rows[j].Cells[i].Value = Math.Round((w * -1), 2);
+                                    dataGridView1.Rows[j].Cells[i].ReadOnly = true;
+                                }
+                                if (czyMniejsza == false)
+                                {
+                                    w = 1 / w;
+                                    if (w > 1)
+                                        dataGridView1.Rows[j].Cells[i].Value = Math.Round(w, 0);
+                                    else
+                                        dataGridView1.Rows[j].Cells[i].Value = Math.Round(w, 2);
+                                    dataGridView1.Rows[j].Cells[i].ReadOnly = true;
+                                }
                             }
                         }
                         catch (Exception x)

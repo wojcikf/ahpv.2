@@ -17,6 +17,7 @@ namespace ahpW
         {
             InitializeComponent();
             x = f;
+            this.Text = "Dodaj nowe kryterium";
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -28,7 +29,6 @@ namespace ahpW
                 x.addDataColumnToGrid(k);
                 Refresh();
                 x.addDataRowToGrid();
-
                 Close();
             }
             else {

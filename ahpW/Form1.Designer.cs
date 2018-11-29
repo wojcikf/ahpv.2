@@ -73,18 +73,18 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(562, 41);
+            this.label1.Location = new System.Drawing.Point(736, 56);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(103, 13);
+            this.label1.Size = new System.Drawing.Size(144, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Kryteria i alternatywy";
+            this.label1.Text = "Drzewo kryteriów i alternatyw";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // treeView1
             // 
-            this.treeView1.Location = new System.Drawing.Point(565, 57);
+            this.treeView1.Location = new System.Drawing.Point(739, 72);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(100, 182);
+            this.treeView1.Size = new System.Drawing.Size(289, 182);
             this.treeView1.TabIndex = 5;
             // 
             // button2
@@ -119,10 +119,10 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label3.Location = new System.Drawing.Point(682, 41);
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label3.Location = new System.Drawing.Point(572, 56);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 15);
+            this.label3.Size = new System.Drawing.Size(77, 13);
             this.label3.TabIndex = 9;
             this.label3.Text = "Wagi kryteriów";
             this.label3.Visible = false;
@@ -151,7 +151,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(867, 503);
+            this.ClientSize = new System.Drawing.Size(1040, 503);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.label3);
